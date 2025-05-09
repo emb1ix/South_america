@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Guess the South American Country</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    #countryInput {
+      font-size: 1.2em;
+      padding: 10px;
+      width: 300px;
+      margin: 20px 0;
+    }
+    #message {
+      font-size: 1.2em;
+      margin-top: 10px;
+      color: green;
+    }
+    #map-container {
+      position: relative;
+      display: inline-block;
+    }
+    #map {
+      max-width: 90%;
+      height: auto;
+    }
+    .label {
+      position: absolute;
+      color: green;
+      font-weight: bold;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+  <h1>Guess the South American Country</h1>
+  <input id="countryInput" placeholder="Type country name..." autofocus />
+  <div id="message"></div>
+  <div id="map-container">
+    <img id="map" src="south_america_map.png" alt="Map of South America">
+  </div>
+
+  <script>
+    const countries = {
+      "Argentina": [400, 720],
+      "Bolivia": [440, 510],
+      "Brazil": [500, 380],
+      "Chile": [350, 750],
+      "Colombia": [320, 260],
+      "Ecuador": [280, 360],
+      "Guyana": [450, 260],
+      "Paraguay": [460, 620],
+      "Peru": [340, 460],
+      "Suriname": [490, 250],
+      "Uruguay": [500, 730],
+      "Venezuela": [400, 200],
+      "French Guiana": [530, 250]
+    };
+
+    const guessed = new Set();
+    const mapContainer = document.getElementById("map-container");
+
+    document.getElementById('countryInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const input = e.target.value.trim().toLowerCase();
+        for (const country in countries) {
+          if (input === country.toLowerCase() && !guessed.has(country)) {
+            guessed.add(country);
+            document.getElementById('message').innerText = `Correct: ${country}`;
+            e.target.value = '';
+            addLabel(country);
+            checkWin();
+            return;
+          }
+        }
+        document.getElementById('message').innerText = "Try again!";
+      }
+    });
+
+    function addLabel(country) {
+      const [x, y] = countries[country];
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.style.left = `${x}px`;
+      label.style.top = `${y}px`;
+      label.innerText = country;
+      mapContainer.appendChild(label);
+    }
+
+    function checkWin() {
+      if (guessed.size === Object.keys(countries).length) {
+        document.getElementById('message').innerText = "🎉 You guessed all countries!";
+      }
+    }
+  </script>
+</body>
+</html>
